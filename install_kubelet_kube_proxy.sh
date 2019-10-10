@@ -24,7 +24,7 @@ Requires=docker.service
 
 [Service]
 WorkingDirectory=/var/lib/kubelet
-ExecStart=/usr/local/bin/kubelet --logtostderr=true --v=0 --address 10.210.110.164 --hostname-override=10.210.110.164 --pod-infra-container-image=jimmysong/pause-amd64:3.0  --cluster-dns=10.254.0.2 --experimental-bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig --cert-dir=/etc/kubernetes/ssl --cluster-domain=cluster.local --hairpin-mode=promiscuous-bridge --serialize-image-pulls=false --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --healthz-bind-address=0.0.0.0
+ExecStart=/usr/local/bin/kubelet --logtostderr=true --v=0 --address 10.210.110.164 --hostname-override=10.210.110.164 --pod-infra-container-image=jimmysong/pause-amd64:3.0  --cluster-dns=10.254.0.2 --experimental-bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig --cert-dir=/etc/kubernetes/ssl --cluster-domain=cluster.local --hairpin-mode=promiscuous-bridge --serialize-image-pulls=false --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --healthz-bind-address=0.0.0.0  --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
 Restart=on-failure
 
 [Install]
