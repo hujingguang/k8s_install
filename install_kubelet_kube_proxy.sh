@@ -30,6 +30,7 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
+
 mkdir /var/lib/kubelet
 
 
@@ -37,3 +38,35 @@ mkdir /var/lib/kubelet
 #登录master节点
 kubectl get csr
 kubectl certificate approve csr-2b308 
+
+
+
+
+
+
+
+
+
+
+#----------------------------------kube-proxy install---------------------------------------------------------------------------------------
+yum install -y conntrack-tools
+
+
+cat > /usr/lib/systemd/system/kube-proxy.service <<EOF
+[Unit]
+Description=Kubernetes Kube-Proxy Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/proxy
+ExecStart=/usr/local/bin/kube-proxy  --bind-address=10.210.110.164 --hostname-override=10.210.110.164 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig --cluster-cidr=10.254.0.0/16 --logtostderr=true --v=0 --address=10.210.110.164 
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+
