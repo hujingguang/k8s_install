@@ -60,7 +60,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=-/etc/kubernetes/proxy
-ExecStart=/usr/local/bin/kube-proxy  --bind-address=10.210.110.164 --hostname-override=10.210.110.164 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig --cluster-cidr=10.254.0.0/16 --logtostderr=true --v=0 --address=10.210.110.164 
+ExecStart=/usr/local/bin/kube-proxy  --bind-address=10.210.110.164 --hostname-override=10.210.110.164 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig --cluster-cidr=10.254.0.0/16 --logtostderr=true --v=0 --proxy-mode=ipvs
 Restart=on-failure
 LimitNOFILE=65536
 
