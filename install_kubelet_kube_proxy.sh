@@ -60,13 +60,24 @@ After=network.target
 
 [Service]
 EnvironmentFile=-/etc/kubernetes/proxy
-ExecStart=/usr/local/bin/kube-proxy  --bind-address=10.210.110.164 --hostname-override=10.210.110.164 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig --cluster-cidr=10.254.0.0/16 --logtostderr=true --v=0 --proxy-mode=ipvs
+ExecStart=/usr/local/bin/kube-proxy  --bind-address=10.210.110.164 --hostname-override=10.210.110.164 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig --cluster-cidr=10.254.0.0/16 --logtostderr=true --v=0 --proxy-mode=ipvs --masquerade-all
 Restart=on-failure
 LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
+
+#重点注意！！！！！！！！！
+#所有主机添加配置内核参数  kube-proxy 增加 --masquerade-all 选项，以确保反向流量通过
+cat >> /etc/sysctl.conf <<EOF
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+sysctl -p
+
 
 
 
