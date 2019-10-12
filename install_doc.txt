@@ -1,0 +1,6 @@
+k8s二进制文件部署顺序
+1. 首先根据 generate_key.sh 脚本创建所需用的公秘钥对，etcd集群秘钥需要制定访问的IP
+2. 根据 install_etcd.sh 部署etcd集群
+3. 根据install_k8s_server_binary.sh 安装 api-server,controller-manager,scheduler和kubectl
+4. 根据 install_flanned.sh 和install_docker部署flanneld和docker
+5. 根据  install_kubelet_kube_proxy.sh 安装 kubelet 和kube-proxy
