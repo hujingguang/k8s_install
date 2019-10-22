@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: consul-agent
+  namespace: middleware
+spec:
+  selector:
+    matchLabels:
+      app: consul-agent
+  template:
+    metadata:
+      labels:
+        app: consul-agent
+    spec:
+      containers:
+      - args:
+        - agent 
+        - "-bind=$(POD_IP)"
+        - -client=0.0.0.0
+        - -data-dir=/tmp/consul
+        - -join=10.210.110.37
+        - -join=10.210.110.38
+        - -join=10.210.110.39
+        - -datacenter=yx-sz
+        image: consul:1.3.1
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        imagePullPolicy: IfNotPresent
+        name: consul-agent
+        ports:
+        - containerPort: 8301
+          hostPort: 8301
+          name: port-8301
+          protocol: TCP
+        - containerPort: 8500
+          hostPort: 8500
+          name: port-8500
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/hostname: linux
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - operator: Exists
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
