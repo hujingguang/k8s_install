@@ -43,7 +43,7 @@ spec:
       hostNetwork: true
       hostPID: true
       nodeSelector:
-        kubernetes.io/hostname: linux
+        kubernetes.io/os: linux
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       tolerations:
