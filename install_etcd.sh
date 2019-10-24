@@ -118,3 +118,23 @@ then
 fi
 rm -rf /tmp/etcd-linux-amd64.tar.gz /tmp/etcd-download-test
 systemctl daemon-reload
+
+
+cat >/usr/lib/systemd/system/etcd.service<<EOF
+[Unit]
+Description=etcd
+After=network.target
+
+[Service]
+Type=notify
+User=etcd
+EnvironmentFile=/etc/etcd.env
+ExecStart=/usr/bin/etcd
+NotifyAccess=all
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target
+EOF
