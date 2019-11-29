@@ -1,0 +1,9 @@
+apiVersion: projectcalico.org/v3
+kind: CalicoAPIConfig
+metadata:
+spec:
+  etcdEndpoints: https://etcd1:2379,https://etcd2:2379,https://etcd3:2379
+  etcdKeyFile: /etc/ssl/etcd/ssl/kubernetes-key.pem
+  etcdCertFile: /etc/ssl/etcd/ssl/kubernetes.pem
+  etcdCACertFile: /etc/ssl/etcd/ssl/ca.pem
+
