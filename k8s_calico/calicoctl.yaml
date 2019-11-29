@@ -1,3 +1,5 @@
+
+#直连etcd模式
 apiVersion: projectcalico.org/v3
 kind: CalicoAPIConfig
 metadata:
@@ -7,3 +9,16 @@ spec:
   etcdCertFile: /etc/ssl/etcd/ssl/kubernetes.pem
   etcdCACertFile: /etc/ssl/etcd/ssl/ca.pem
 
+#连接apiserver模式
+#
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: host
+spec:
+  selector: running-calico == "true"
+  order: 5000
+  ingress:
+  - action: Allow
+  egress:
+  - action: Allow
