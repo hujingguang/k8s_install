@@ -321,3 +321,4 @@ cfssl gencert -ca=aggregator-ca.pem -ca-key=aggregator-ca-key.pem -config=aggreg
 --proxy-client-cert-file=/etc/kubernetes/ssl/aggregator.pem
 --proxy-client-key-file=/etc/kubernetes/ssl/aggregator-key.pem
 
+#前面创建的证书的 CN 字段的值必须和参数 –requestheader-allowed-names 指定的值 aggregator 相同。
