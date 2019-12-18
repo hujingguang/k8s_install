@@ -233,4 +233,91 @@ cp bootstrap.kubeconfig kube-proxy.kubeconfig /etc/kubernetes/
 
 
 
+#创建聚合层ca证书
+
+cat > aggregator-ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "aggregator": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "87600h"
+      }
+    }
+  }
+}
+EOF
+cat > aggregator-ca-csr.json <<EOF
+{
+  "CN": "aggregator",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "Shanghai",
+      "L": "Shanghai",
+      "O": "k8s",
+      "OU": "System"
+    }
+  ],
+    "ca": {
+       "expiry": "87600h"
+    }
+}
+EOF
+#字段说明：
+#    “CN” ：Common Name，kube-apiserver 从证书中提取该字段作为请求的用户名 (User Name)；浏览器使用该字段验证网站是否合法。
+#    “O” ：Organization，kube-apiserver 从证书中提取该字段作为请求用户所属的组 (Group)；
+cfssl gencert -initca aggregator-ca-csr.json | cfssljson -bare aggregator-ca
+
+cat > aggregator-csr.json <<EOF
+{
+    "CN": "aggregator",
+    "hosts": [
+      "127.0.0.1",
+      "192.168.123.250",
+      "192.168.123.248",
+      "192.168.123.249",
+      "10.254.0.1",
+      "kubernetes",
+      "kubernetes.default",
+      "kubernetes.default.svc",
+      "kubernetes.default.svc.cluster",
+      "kubernetes.default.svc.cluster.local"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "Shanghai",
+            "L": "Shanghai",
+            "O": "k8s",
+            "OU": "System"
+        }
+    ]
+}
+EOF
+cfssl gencert -ca=aggregator-ca.pem -ca-key=aggregator-ca-key.pem -config=aggregator-ca-config.json -profile=aggregator aggregator-csr.json | cfssljson -bare aggregator
+#开启聚合曾证书
+--requestheader-client-ca-file=/etc/kubernetes/ssl/aggregator-ca.pem
+--requestheader-allowed-names=aggregator
+--requestheader-extra-headers-prefix=X-Remote-Extra-
+--requestheader-group-headers=X-Remote-Group
+--requestheader-username-headers=X-Remote-User
+--proxy-client-cert-file=/etc/kubernetes/ssl/aggregator.pem
+--proxy-client-key-file=/etc/kubernetes/ssl/aggregator-key.pem
 
